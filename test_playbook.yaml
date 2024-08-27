@@ -1,0 +1,73 @@
+- name: Unifi module test playbook
+  hosts: localhost
+  vars_files:
+    - secrets.yml
+  vars:
+    list_all_hosts_file: "list_all_hosts.json"
+    host_id: "9C05D64A19090000000007EE55500000000008590C830000000065BEC4F6:783424360"
+    headers: 
+      Content-Type: "application/json"
+      Accept: "application/json"
+  tasks:
+    - name: Get all hosts
+      unifi_api:
+        endpoint: "hosts"
+        method: GET
+        headers: "{{ headers }}"
+        api_key: "{{ unifi_api_key }}"
+      register: result_all_hosts
+
+    - name: Debug all hosts
+      debug:
+        var: result_all_hosts
+
+    - name: Get Host by ID
+      unifi_api:
+        endpoint: "hosts/{{ host_id }}"
+        method: GET
+        headers: "{{ headers }}"
+        api_key: "{{ unifi_api_key }}"
+      register: result_host
+
+    - name: Debug host
+      debug:
+        var: result_host
+
+    - name: List sites
+      unifi_api:
+        endpoint: "sites"
+        method: GET
+        headers: "{{ headers }}"
+        api_key: "{{ unifi_api_key }}"
+      register: result_sites
+
+    - name: Debug sites
+      debug:
+        var: result_sites
+
+    - name: List devices
+      unifi_api:
+        endpoint: "devices"
+        method: GET
+        headers: "{{ headers }}"
+        api_key: "{{ unifi_api_key }}"
+      register: result_devices
+
+    - name: Write devices to file
+      copy:
+        content: "{{ result_devices.result | to_nice_json }}"
+        dest: "list_devices.json"
+
+    - name: List devices for site by Host ID
+      unifi_api:
+        endpoint: "devices"
+        method: GET
+        headers: "{{ headers }}"
+        api_key: "{{ unifi_api_key }}"
+        params: 
+          hostIds: ["{{ host_id }}"]
+      register: result_devices_for_site
+
+    - name: Debug devices for site
+      debug:
+        var: result_devices_for_site
