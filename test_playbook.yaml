@@ -4,7 +4,7 @@
     - secrets.yml
   vars:
     list_all_hosts_file: "list_all_hosts.json"
-    host_id: "9C05D64A19090000000007EE55500000000008590C830000000065BEC4F6:783424360"
+    host_id: "your_host_id_here"
     headers: 
       Content-Type: "application/json"
       Accept: "application/json"
