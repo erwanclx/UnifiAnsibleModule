@@ -4,7 +4,7 @@
     - secrets.yml
   vars:
     list_all_hosts_file: "list_all_hosts.json"
-    host_id: "your_host_id_here"
+    host_id: "{{ udm_test }}"
     headers: 
       Content-Type: "application/json"
       Accept: "application/json"
@@ -53,11 +53,6 @@
         api_key: "{{ unifi_api_key }}"
       register: result_devices
 
-    - name: Write devices to file
-      copy:
-        content: "{{ result_devices.result | to_nice_json }}"
-        dest: "list_devices.json"
-
     - name: List devices for site by Host ID
       unifi_api:
         endpoint: "devices"
@@ -67,7 +62,3 @@
         params: 
           hostIds: ["{{ host_id }}"]
       register: result_devices_for_site
-
-    - name: Debug devices for site
-      debug:
-        var: result_devices_for_site
